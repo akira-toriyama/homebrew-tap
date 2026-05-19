@@ -55,6 +55,6 @@ class WsTabs < Formula
   end
 
   test do
-    assert_predicate prefix/"WsTabs.app/Contents/MacOS/ws-tabs", :exist?
+    assert_path_exists prefix/"WsTabs.app/Contents/MacOS/ws-tabs"
   end
 end
