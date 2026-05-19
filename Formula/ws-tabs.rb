@@ -6,7 +6,7 @@ class WsTabs < Formula
   homepage "https://github.com/akira-toriyama/ws-tabs"
   # After `git tag v1.0 && git push --tags`, set sha256 (see runbook).
   url "https://github.com/akira-toriyama/ws-tabs/archive/refs/tags/v1.0.tar.gz"
-  sha256 "a4df03f28853e6ea6e2e8a447f98454fd5ba4498acd3ba046c66d3ab3c4ed5cd"
+  sha256 "8b26e0e666bf055f8e4821962e4232332d87807e482131945e2cab1917e66b13"
   license "MIT"
   head "https://github.com/akira-toriyama/ws-tabs.git", branch: "main"
 
