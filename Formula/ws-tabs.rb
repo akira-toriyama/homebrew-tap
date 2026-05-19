@@ -8,7 +8,7 @@ class WsTabs < Formula
   # (a sha cannot self-reference the tarball that contains it). Per-release
   # steps: packaging/homebrew/README.md.
   url "https://github.com/akira-toriyama/ws-tabs/archive/refs/tags/v1.0.0.tar.gz"
-  sha256 "dd1c7332430caa211d5c4085acea9c2c0e9b77add63a7526c79d13a0f085788f"
+  sha256 "a387b715fba72ae18b5126d39cfa927c6373a19e5341b2faa91e9149129b9df7"
   license "MIT"
   head "https://github.com/akira-toriyama/ws-tabs.git", branch: "main"
 
