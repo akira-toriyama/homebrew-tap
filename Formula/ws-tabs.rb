@@ -10,7 +10,9 @@ class WsTabs < Formula
   license "MIT"
   head "https://github.com/akira-toriyama/ws-tabs.git", branch: "main"
 
-  depends_on xcode: :build
+  # Builds with the Swift toolchain from Xcode *or* the Command Line Tools;
+  # a full Xcode.app is not required. swift-tools-version 6.0 needs a Swift 6
+  # toolchain — older toolchains fail fast with a clear version error.
   depends_on macos: :ventura
 
   def install
