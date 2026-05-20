@@ -10,7 +10,7 @@ class WsTabs < Formula
   url "https://github.com/akira-toriyama/ws-tabs/archive/refs/tags/v1.5.0.tar.gz"
   sha256 "0f6aef7b50018792e830daf04a4c9a0077323af40e40e41701f5ca49a63b9f0d"
   license "MIT"
-  revision 1
+  revision 2
   head "https://github.com/akira-toriyama/ws-tabs.git", branch: "main"
 
   # Builds with the Swift toolchain from Xcode *or* the Command Line Tools;
@@ -28,17 +28,48 @@ class WsTabs < Formula
     # SwiftPM target is still `rift-tabs`; shipped executable is `ws-tabs`.
     cp ".build/release/rift-tabs", app/"Contents/MacOS/ws-tabs"
 
-    # Sign with a stable per-user self-signed identity (idempotently created
-    # by setup-signing-cert.sh in the login keychain). Reused on every
-    # reinstall/upgrade → the Accessibility (TCC) grant persists. Falls
-    # back to ad-hoc signing if the cert can't be created (e.g. login
-    # keychain is locked and can't be unlocked non-interactively).
+    # Ship the signing helper under share/ so users can recover the
+    # persistent-TCC path later via `brew reinstall`, without needing to
+    # clone the source repo.
+    pkgshare.install "setup-signing-cert.sh"
+    chmod 0755, pkgshare/"setup-signing-cert.sh"
+
+    # Hybrid signing (best-effort cert, loud fallback):
+    # 1. Try to set up / reuse a stable per-user self-signed identity in
+    #    the login keychain. When this works, the code-signing leaf hash
+    #    stays constant across reinstalls, so TCC grants (Accessibility +
+    #    Screen Recording) persist across `brew upgrade`.
+    # 2. If the script fails — locked login keychain, brew sandbox
+    #    quirks, missing openssl, etc. — fall back to ad-hoc signing
+    #    (always works) and emit a LOUD warning with a copy-pasteable
+    #    recovery path. Without the warning the fallback is silent and
+    #    users only notice when macOS re-prompts on every upgrade.
     sign_id = "-"
     if quiet_system "./setup-signing-cert.sh"
       id_file = ".signing-id"
       sign_id = File.read(id_file).strip if File.exist?(id_file)
     end
     system "codesign", "--force", "--sign", sign_id, app
+
+    if sign_id == "-"
+      opoo <<~EOS
+        Could not set up a stable self-signed identity in the login keychain —
+        signed WsTabs.app ad-hoc. The app works fine, but every
+        `brew upgrade ws-tabs` produces a new code hash, so macOS will
+        re-prompt for Accessibility + Screen Recording on every upgrade.
+
+        To make grants persist across upgrades, run once after install:
+          #{opt_pkgshare}/setup-signing-cert.sh
+          brew reinstall ws-tabs
+
+        Verify:
+          codesign -dvv #{opt_prefix}/WsTabs.app
+          # expect: Authority="rift-tabs Local Signing"
+      EOS
+    else
+      ohai "Signed WsTabs.app with stable self-signed identity " \
+           "(\"#{sign_id}\") — TCC grants persist across upgrades."
+    end
 
     # Same binary doubles as the thin CLI client (--show/--hide/--theme).
     bin.install_symlink app/"Contents/MacOS/ws-tabs" => "ws-tabs"
@@ -61,12 +92,13 @@ class WsTabs < Formula
         ws-tabs --show | --hide | --toggle | --active | --quit
         ws-tabs --theme="terminal" | "cute" | "system"
 
-      Accessibility persists across `brew upgrade`: the install creates a
-      stable per-user self-signed code-signing identity in your login
-      keychain (`setup-signing-cert.sh` is idempotent — runs once). On
-      first install macOS may prompt to allow keychain access; if your
-      login keychain is locked at that moment, install falls back to
-      ad-hoc and the grant won't persist.
+      Persistent Accessibility / Screen Recording grants across
+      `brew upgrade` need a stable code-signing identity. The install
+      creates one automatically when it can; if the install printed a
+      "fell back to ad-hoc" warning (or `codesign -dvv
+      #{opt_prefix}/WsTabs.app` shows no Authority line), run once:
+        #{opt_pkgshare}/setup-signing-cert.sh
+        brew reinstall ws-tabs
     EOS
   end
 
