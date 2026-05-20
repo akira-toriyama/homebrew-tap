@@ -7,8 +7,8 @@ class WsTabs < Formula
   # Reference copy. The REAL sha256 lives only in the tap's Formula/ws-tabs.rb
   # (a sha cannot self-reference the tarball that contains it). Per-release
   # steps: packaging/homebrew/README.md.
-  url "https://github.com/akira-toriyama/ws-tabs/archive/refs/tags/v1.3.0.tar.gz"
-  sha256 "0db388b25594e0e3c332b6646ef50e0e109d759cb0dc40ea4ac4203a8ddddcad"
+  url "https://github.com/akira-toriyama/ws-tabs/archive/refs/tags/v1.4.0.tar.gz"
+  sha256 "344a13d324a0681011103c49c161c4cba0383abc2c364e38cb19c3e793b7fe24"
   license "MIT"
   head "https://github.com/akira-toriyama/ws-tabs.git", branch: "main"
 
