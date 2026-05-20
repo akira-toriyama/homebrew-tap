@@ -10,7 +10,6 @@ class WsTabs < Formula
   url "https://github.com/akira-toriyama/ws-tabs/archive/refs/tags/v1.5.0.tar.gz"
   sha256 "0f6aef7b50018792e830daf04a4c9a0077323af40e40e41701f5ca49a63b9f0d"
   license "MIT"
-  revision 2
   head "https://github.com/akira-toriyama/ws-tabs.git", branch: "main"
 
   # Builds with the Swift toolchain from Xcode *or* the Command Line Tools;
