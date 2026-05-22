@@ -12,7 +12,7 @@ class Stroke < Formula
   # (a sha cannot self-reference the tarball that contains it). Per-release
   # steps: packaging/homebrew/README.md.
   url "https://github.com/akira-toriyama/stroke/archive/refs/tags/v1.1.0.tar.gz"
-  sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+  sha256 "8379749aae893bf268b96f07d9b7064c32e4c35f94c4a4ceb68197de8f495a67"
   license "MIT"
   head "https://github.com/akira-toriyama/stroke.git", branch: "main"
 
