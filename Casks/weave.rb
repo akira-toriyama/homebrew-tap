@@ -14,8 +14,8 @@ cask "weave" do
   arch arm: "arm64", intel: "x64"
 
   version "0.0.1"
-  sha256 arm:   "0000000000000000000000000000000000000000000000000000000000000000",
-         intel: "0000000000000000000000000000000000000000000000000000000000000000"
+  sha256 arm:   "570a834b08c0936efcbc0009fe27d3f44a976e54cd417b09c10630cdc2dd4d68",
+         intel: "43041aa6cb5664c72cd0240f37a041d366043f580355ae2246821a943fd9b800"
 
   url "https://github.com/akira-toriyama/weave/releases/download/v#{version}/Weave-#{version}-#{arch}.dmg",
       verified: "github.com/akira-toriyama/weave/"
