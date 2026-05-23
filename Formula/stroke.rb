@@ -11,8 +11,8 @@ class Stroke < Formula
   # Reference copy. The REAL sha256 lives only in the tap's Formula/stroke.rb
   # (a sha cannot self-reference the tarball that contains it). Per-release
   # steps: packaging/homebrew/README.md.
-  url "https://github.com/akira-toriyama/stroke/archive/refs/tags/v1.4.1.tar.gz"
-  sha256 "2c714cef9d54c215bb916697ad462120b57206e74454383660cc435719e13228"
+  url "https://github.com/akira-toriyama/stroke/archive/refs/tags/v1.5.0.tar.gz"
+  sha256 "ad27bb29caacf2c1279b861919acd0f6dedded6f8cc2eea4db83967f41d91fe0"
   license "MIT"
   head "https://github.com/akira-toriyama/stroke.git", branch: "main"
 
