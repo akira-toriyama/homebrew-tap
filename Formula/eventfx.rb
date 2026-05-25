@@ -13,6 +13,7 @@ class Eventfx < Formula
   depends_on macos: :ventura
 
   def install
+    mkdir_p "bin"  # v0.1.0 tarball の build.sh は mkdir -p が無く失敗するため事前作成。v0.2.0 で除去予定
     system "./build.sh"
     bin.install "bin/eventfx"
   end
