@@ -42,40 +42,19 @@ class Chord < Formula
     )
     chmod 0755, pkgshare/"setup-signing-cert.sh"
 
-    # Hybrid signing (best-effort cert, loud fallback) — same pattern as
-    # facet / stroke. The setup script's `.signing-id` artefact carries
-    # the identity name back to us so we can sign with it; an absent or
-    # failed setup falls back to ad-hoc with a loud warning so the user
-    # discovers it before macOS re-prompts on every upgrade.
-    sign_id = "-"
-    if quiet_system "./setup-signing-cert.sh"
-      id_file = ".signing-id"
-      sign_id = File.read(id_file).strip if File.exist?(id_file)
-    end
-    system "codesign", "--force", "--sign", sign_id, app
-
-    if sign_id == "-"
-      opoo <<~EOS
-        Could not set up a stable self-signed identity in the login
-        keychain — signed Chord.app ad-hoc. The app works fine, but every
-        `brew upgrade chord` produces a new code hash, so macOS will
-        re-prompt for Accessibility on every upgrade.
-
-        To make grants persist across upgrades, run once after install:
-          #{opt_pkgshare}/setup-signing-cert.sh
-          brew reinstall chord
-
-        Verify:
-          codesign -dvv #{opt_prefix}/Chord.app
-          # expect: Authority="chord-dev"
-      EOS
-    else
-      ohai "Signed Chord.app with stable self-signed identity " \
-           "(\"#{sign_id}\") — TCC grants persist across upgrades."
-    end
+    # Ad-hoc sign the bundle. We intentionally don't try to set up
+    # the persistent `chord-dev` identity here — Homebrew's build
+    # sandbox blocks `security` from touching the user's login
+    # keychain, so any attempt would fail silently and fall back to
+    # ad-hoc anyway. The user runs `chord --resign` once after
+    # install / upgrade to swap in the stable identity (when the
+    # binary doubles as a CLI tool with full keychain access via the
+    # user's interactive shell, not brew's sandbox).
+    system "codesign", "--force", "--sign", "-", app
 
     # Same binary doubles as the thin CLI client (--reload / --quit /
-    # --pause / --resume / --toggle / --validate / --doctor / --status).
+    # --pause / --resume / --toggle / --validate / --doctor /
+    # --status / --resign).
     bin.install_symlink app/"Contents/MacOS/chord" => "chord"
   end
 
@@ -107,6 +86,27 @@ class Chord < Formula
       Dock icon). It taps every key + button event the OS produces, so it
       needs the Accessibility grant once.
 
+      ── One-time signing setup (preserves Accessibility across upgrades) ──
+
+      Homebrew's build sandbox can't touch your login keychain, so
+      `brew install`/`brew upgrade chord` produces an ad-hoc-signed
+      Chord.app — macOS would otherwise re-prompt for Accessibility
+      every upgrade. Run these ONCE on first install:
+
+        #{opt_pkgshare}/setup-signing-cert.sh   # creates 'chord-dev' identity
+        chord --resign                            # re-signs Chord.app + restart
+
+      After every subsequent `brew upgrade chord`, just run:
+
+        chord --resign
+
+      Verify the persistent identity took:
+
+        codesign -dvv #{opt_prefix}/Chord.app
+        # expect: Authority=chord-dev
+
+      ── First-run setup ──
+
       First-run setup:
         1) Drop the config template (shipped template is all-commented,
            pick patterns to uncomment):
@@ -132,13 +132,6 @@ class Chord < Formula
         chord --status                show last status line
         chord --quit                  terminate the running daemon
 
-      Persistent Accessibility grants across `brew upgrade` need a stable
-      code-signing identity. The install creates one automatically when
-      it can; if the install printed a "fell back to ad-hoc" warning (or
-      `codesign -dvv #{opt_prefix}/Chord.app` shows no Authority line),
-      run once:
-        #{opt_pkgshare}/setup-signing-cert.sh
-        brew reinstall chord
     EOS
   end
 
