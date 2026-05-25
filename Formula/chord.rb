@@ -81,7 +81,16 @@ class Chord < Formula
 
   service do
     run [opt_bin/"chord"]
-    keep_alive true
+    # Restart only on SUCCESSFUL exit, NOT on every crash. chord
+    # exits 1 when Accessibility is not yet granted (so the user
+    # sees `Permissions.promptForAccessibility()` once), and a plain
+    # `keep_alive true` turns that into an infinite respawn loop —
+    # macOS shows the AX prompt over and over until the user grants
+    # it. The `successful_exit` form (equivalent to
+    # `KeepAlive = { SuccessfulExit = true }` in launchd) breaks
+    # that loop while still restarting after a deliberate
+    # `chord --quit` or natural shutdown.
+    keep_alive successful_exit: true
     log_path var/"log/chord.log"
     error_log_path var/"log/chord.log"
     # Homebrew's default PATH is bare — Add Homebrew + system PATH so any
