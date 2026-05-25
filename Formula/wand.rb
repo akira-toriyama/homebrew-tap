@@ -8,8 +8,8 @@
 class Wand < Formula
   desc "macOS daemon for cursor-anchored mouse automation — gesture + launcher"
   homepage "https://github.com/akira-toriyama/wand"
-  url "https://github.com/akira-toriyama/wand/archive/refs/tags/v3.0.0.tar.gz"
-  sha256 "d311394d5e6aaf1cda0639573e8d236d71894ebce3f1c112ee9a832296bb4152"
+  url "https://github.com/akira-toriyama/wand/archive/refs/tags/v3.1.0.tar.gz"
+  sha256 "7bb36d9276a98c702b4d8bde826ab311c4c23ffbb87700a7c789401a49689545"
   license "MIT"
   head "https://github.com/akira-toriyama/wand.git", branch: "main"
 
