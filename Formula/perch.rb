@@ -6,7 +6,7 @@ class Perch < Formula
   # Placeholder values here are good for the first run; the first
   # bump rewrites them to the real v1.x.y tag + tarball sha256.
   url "https://github.com/akira-toriyama/perch/archive/refs/tags/v1.0.0.tar.gz"
-  sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+  sha256 "84d2898a0e9869fb53fcce04aed0db42d4de463bac426fa3449091c2460db5d8"
   license "MIT"
   head "https://github.com/akira-toriyama/perch.git", branch: "main"
 
