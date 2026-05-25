@@ -31,46 +31,18 @@ class Facet < Formula
     pkgshare.install "setup-signing-cert.sh"
     chmod 0755, pkgshare/"setup-signing-cert.sh"
 
-    # Hybrid signing (best-effort cert, loud fallback):
-    # 1. Try to set up / reuse a stable per-user self-signed identity
-    #    in the login keychain. When this works, the code-signing leaf
-    #    hash stays constant across reinstalls, so TCC grants
-    #    (Accessibility + Screen Recording) persist across
-    #    `brew upgrade`.
-    # 2. If the script fails — locked login keychain, brew sandbox
-    #    quirks, missing openssl, etc. — fall back to ad-hoc signing
-    #    (always works) and emit a LOUD warning with a copy-pasteable
-    #    recovery path. Without the warning the fallback is silent and
-    #    users only notice when macOS re-prompts on every upgrade.
-    sign_id = "-"
-    if quiet_system "./setup-signing-cert.sh"
-      id_file = ".signing-id"
-      sign_id = File.read(id_file).strip if File.exist?(id_file)
-    end
-    system "codesign", "--force", "--sign", sign_id, app
+    # Ad-hoc sign the bundle. We intentionally don't try to set up
+    # the persistent "facet Local Signing" identity here —
+    # Homebrew's build sandbox blocks `security` from touching the
+    # user's login keychain, so any attempt would fail silently and
+    # fall back to ad-hoc anyway (verified during chord's 0.3.3
+    # investigation). The user runs `facet --resign` once after
+    # install / upgrade to swap in the stable identity — same
+    # pattern as chord and stroke.
+    system "codesign", "--force", "--sign", "-", app
 
-    if sign_id == "-"
-      opoo <<~EOS
-        Could not set up a stable self-signed identity in the login
-        keychain — signed Facet.app ad-hoc. The app works fine, but
-        every `brew upgrade facet` produces a new code hash, so macOS
-        will re-prompt for Accessibility + Screen Recording on every
-        upgrade.
-
-        To make grants persist across upgrades, run once after install:
-          #{opt_pkgshare}/setup-signing-cert.sh
-          brew reinstall facet
-
-        Verify:
-          codesign -dvv #{opt_prefix}/Facet.app
-          # expect: Authority="facet Local Signing"
-      EOS
-    else
-      ohai "Signed Facet.app with stable self-signed identity " \
-           "(\"#{sign_id}\") — TCC grants persist across upgrades."
-    end
-
-    # Same binary doubles as the thin CLI client (--view=*/--theme/...).
+    # Same binary doubles as the thin CLI client (--view=* /
+    # --theme / --resign / etc).
     bin.install_symlink app/"Contents/MacOS/facet" => "facet"
   end
 
@@ -78,6 +50,29 @@ class Facet < Formula
     <<~EOS
       facet is a GUI agent (LSUIElement) that drives the rift window
       manager.
+
+      ── One-time signing setup (preserves Accessibility + Screen
+         Recording grants across upgrades) ──
+
+      Homebrew's build sandbox can't touch your login keychain, so
+      `brew install`/`brew upgrade facet` produces an ad-hoc-signed
+      Facet.app — macOS would otherwise re-prompt for Accessibility
+      + Screen Recording every upgrade. Run these ONCE on first
+      install:
+
+        #{opt_pkgshare}/setup-signing-cert.sh   # "facet Local Signing"
+        facet --resign                           # re-signs + restart
+
+      After every subsequent `brew upgrade facet`, just run:
+
+        facet --resign
+
+      Verify the persistent identity took:
+
+        codesign -dvv #{opt_prefix}/Facet.app
+        # expect: Authority="facet Local Signing"
+
+      ── First-run setup ──
 
       Launch the panel:
         open #{opt_prefix}/Facet.app
@@ -98,14 +93,6 @@ class Facet < Formula
         facet --view=tree | --view=grid | --hide=NAME | --toggle=NAME
         facet --theme="terminal" | "cute" | "system"
         facet --help
-
-      Persistent Accessibility / Screen Recording grants across
-      `brew upgrade` need a stable code-signing identity. The install
-      creates one automatically when it can; if the install printed a
-      "fell back to ad-hoc" warning (or `codesign -dvv
-      #{opt_prefix}/Facet.app` shows no Authority line), run once:
-        #{opt_pkgshare}/setup-signing-cert.sh
-        brew reinstall facet
     EOS
   end
 
