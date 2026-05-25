@@ -5,7 +5,7 @@ class Eventfx < Formula
   desc "macOS daemon that runs commands on active window change"
   homepage "https://github.com/akira-toriyama/eventfx"
   url "https://github.com/akira-toriyama/eventfx/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "01e0aca74a652f663bb4e7a59a87dc5a74969ec450ef582bbb0dd9c6eac89639"
+  sha256 "2b666bc2ea97e478c270d5110511b44d9b97bb4108e4e4a5ed18413935f5e958"
   license "MIT"
   head "https://github.com/akira-toriyama/eventfx.git", branch: "main"
 
