@@ -36,45 +36,18 @@ class Stroke < Formula
     pkgshare.install "setup-signing-cert.sh"
     chmod 0755, pkgshare/"setup-signing-cert.sh"
 
-    # Hybrid signing (best-effort cert, loud fallback):
-    # 1. Try to set up / reuse a stable per-user self-signed identity in
-    #    the login keychain. When this works, the code-signing leaf hash
-    #    stays constant across reinstalls, so TCC grants (Accessibility)
-    #    persist across `brew upgrade`.
-    # 2. If the script fails — locked login keychain, brew sandbox
-    #    quirks, missing openssl, etc. — fall back to ad-hoc signing
-    #    (always works) and emit a LOUD warning with a copy-pasteable
-    #    recovery path. Without the warning the fallback is silent and
-    #    users only notice when macOS re-prompts on every upgrade.
-    #    Same pattern facet / ws-tabs use.
-    sign_id = "-"
-    if quiet_system "./setup-signing-cert.sh"
-      id_file = ".signing-id"
-      sign_id = File.read(id_file).strip if File.exist?(id_file)
-    end
-    system "codesign", "--force", "--sign", sign_id, app
+    # Ad-hoc sign the bundle. We intentionally don't try to set up
+    # the persistent "stroke Local Signing" identity here —
+    # Homebrew's build sandbox blocks `security` from touching the
+    # user's login keychain, so any attempt would fail silently and
+    # fall back to ad-hoc anyway (verified via brew source spelunk +
+    # install-log inspection during chord's 0.3.3 work). The user
+    # runs `stroke --resign` once after install / upgrade to swap in
+    # the stable identity — same pattern as chord.
+    system "codesign", "--force", "--sign", "-", app
 
-    if sign_id == "-"
-      opoo <<~EOS
-        Could not set up a stable self-signed identity in the login keychain —
-        signed Stroke.app ad-hoc. The app works fine, but every
-        `brew upgrade stroke` produces a new code hash, so macOS will
-        re-prompt for Accessibility on every upgrade.
-
-        To make grants persist across upgrades, run once after install:
-          #{opt_pkgshare}/setup-signing-cert.sh
-          brew reinstall stroke
-
-        Verify:
-          codesign -dvv #{opt_prefix}/Stroke.app
-          # expect: Authority="stroke Local Signing"
-      EOS
-    else
-      ohai "Signed Stroke.app with stable self-signed identity " \
-           "(\"#{sign_id}\") — TCC grants persist across upgrades."
-    end
-
-    # Same binary doubles as the thin CLI client (--reload / --quit / etc).
+    # Same binary doubles as the thin CLI client (--reload / --quit /
+    # --resign / etc).
     bin.install_symlink app/"Contents/MacOS/stroke" => "stroke"
   end
 
@@ -83,6 +56,27 @@ class Stroke < Formula
       stroke is a global mouse-gesture daemon (LSUIElement, no Dock icon).
       It acts on the window UNDER the cursor — not the focused one — so
       gestures land where you're pointing even on multi-display setups.
+
+      ── One-time signing setup (preserves Accessibility across upgrades) ──
+
+      Homebrew's build sandbox can't touch your login keychain, so
+      `brew install`/`brew upgrade stroke` produces an ad-hoc-signed
+      Stroke.app — macOS would otherwise re-prompt for Accessibility
+      every upgrade. Run these ONCE on first install:
+
+        #{opt_pkgshare}/setup-signing-cert.sh   # creates "stroke Local Signing"
+        stroke --resign                          # re-signs + restart
+
+      After every subsequent `brew upgrade stroke`, just run:
+
+        stroke --resign
+
+      Verify the persistent identity took:
+
+        codesign -dvv #{opt_prefix}/Stroke.app
+        # expect: Authority="stroke Local Signing"
+
+      ── First-run setup ──
 
       First-run setup:
         1) Drop the config template:
@@ -104,14 +98,6 @@ class Stroke < Formula
 
       Auto-start on login (optional):
         Add #{opt_prefix}/Stroke.app to System Settings → General → Login Items.
-
-      Persistent Accessibility grants across `brew upgrade` need a stable
-      code-signing identity. The install creates one automatically when it
-      can; if the install printed a "fell back to ad-hoc" warning (or
-      `codesign -dvv #{opt_prefix}/Stroke.app` shows no Authority line),
-      run once:
-        #{opt_pkgshare}/setup-signing-cert.sh
-        brew reinstall stroke
     EOS
   end
 
