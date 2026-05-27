@@ -5,8 +5,8 @@ class Facet < Formula
   # `.github/workflows/update-tap.yml` on every Published release.
   # Placeholder values here are good for the first run; the first
   # bump rewrites them to the real v1.x.y tag + tarball sha256.
-  url "https://github.com/akira-toriyama/facet/archive/refs/tags/v1.1.0.tar.gz"
-  sha256 "4103327b51293dfedfba4380b264760f181c7a540065739afe5910283eecd60c"
+  url "https://github.com/akira-toriyama/facet/archive/refs/tags/v2.0.0.tar.gz"
+  sha256 "a8a365203bca77e9c60f1d0a3d7c7dd313b0fbf876f50fe9ac97b8a4be8db6d3"
   license "MIT"
   head "https://github.com/akira-toriyama/facet.git", branch: "main"
 
