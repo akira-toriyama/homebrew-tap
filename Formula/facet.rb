@@ -48,8 +48,8 @@ class Facet < Formula
 
   def caveats
     <<~EOS
-      facet is a GUI agent (LSUIElement) that drives the rift window
-      manager.
+      facet is a GUI agent (LSUIElement) — workspace + window
+      manager using only public macOS Accessibility APIs.
 
       ── One-time signing setup (preserves Accessibility + Screen
          Recording grants across upgrades) ──
@@ -85,9 +85,6 @@ class Facet < Formula
       Drop in a config:
         curl --create-dirs -o ~/.config/facet/config.toml \\
           https://raw.githubusercontent.com/akira-toriyama/facet/main/config.toml
-
-      Requires rift + rift-cli on PATH:
-        https://github.com/acsandmann/rift
 
       CLI (no GUI / Accessibility needed):
         facet --view=tree | --view=grid | --hide=NAME | --toggle=NAME
