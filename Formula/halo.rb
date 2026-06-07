@@ -7,7 +7,7 @@ class Halo < Formula
   # first published release fills in the real v1.x.y tag + tarball
   # sha256. Until then, install from main with `brew install --HEAD halo`.
   url "https://github.com/akira-toriyama/halo/archive/refs/tags/v1.0.0.tar.gz"
-  sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+  sha256 "cc64284a2a2f7dc26c93fae985a3971513f6fff451934359f9f741bdf6abb1f3"
   license "MIT"
   head "https://github.com/akira-toriyama/halo.git", branch: "main"
 
