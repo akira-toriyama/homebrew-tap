@@ -43,10 +43,14 @@ class Halo < Formula
   def caveats
     <<~EOS
       halo draws a neon ring around your active window. It's a GUI agent
-      (LSUIElement, no Dock icon, never steals focus) and needs NO
-      permissions — no Accessibility, no Screen Recording (it only reads
-      window geometry via read-only private SkyLight and draws a
-      click-through overlay).
+      (LSUIElement, no Dock icon, never steals focus). The ring needs no
+      permissions; the optional focus-shake (on by default) moves the
+      focused window via Accessibility.
+
+      Grant halo Accessibility for focus-shake (System Settings → Privacy
+      & Security → Accessibility), or set `shake = false` in config.toml
+      to keep halo permission-free. Homebrew installs are ad-hoc signed,
+      so re-grant after each `brew upgrade halo`.
 
       Launch:
         open #{opt_prefix}/Halo.app
