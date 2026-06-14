@@ -5,8 +5,8 @@ class Perch < Formula
   # `.github/workflows/update-tap.yml` on every Published release.
   # Placeholder values here are good for the first run; the first
   # bump rewrites them to the real v1.x.y tag + tarball sha256.
-  url "https://github.com/akira-toriyama/perch/archive/refs/tags/v2.0.0.tar.gz"
-  sha256 "afc4924b8b1845f8a1d9e6e1438e53221c5bdeb5e12812db283a912c47504937"
+  url "https://github.com/akira-toriyama/perch/archive/refs/tags/v3.0.0.tar.gz"
+  sha256 "8251f222a19d6a0f000025639b33abcc110b3f0caf46736d6275cd5ac4e0e818"
   license "MIT"
   head "https://github.com/akira-toriyama/perch.git", branch: "main"
 
