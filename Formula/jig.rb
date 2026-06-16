@@ -8,8 +8,8 @@
 class Jig < Formula
   desc "Jq-compatible JSON processor with humane errors"
   homepage "https://github.com/akira-toriyama/jig"
-  url "https://github.com/akira-toriyama/jig/archive/refs/tags/v1.0.0.tar.gz"
-  sha256 "7bcd040eb9379825f5556cde1dd7a9b2dd36431306dcc587096c1d85ca469542"
+  url "https://github.com/akira-toriyama/jig/archive/refs/tags/v1.1.0.tar.gz"
+  sha256 "b33cf65517bc3e1adda8b20ff08947b3724f61d3bba48ac0c05c7b9e97291440"
   license "MIT"
   head "https://github.com/akira-toriyama/jig.git", branch: "main"
 
