@@ -6,8 +6,8 @@
 class Chord < Formula
   desc "Global keyboard + mouse hotkey daemon for macOS"
   homepage "https://github.com/akira-toriyama/chord"
-  url "https://github.com/akira-toriyama/chord/archive/refs/tags/v0.9.0.tar.gz"
-  sha256 "11fd8d31f6d2ad1c2becc83f82408857262b7b8148df60c8cf877277b6cbc2b4"
+  url "https://github.com/akira-toriyama/chord/archive/refs/tags/v0.9.1.tar.gz"
+  sha256 "f9da708a141c32caa662c354fcac41e8ff66540516687221ef2a4bfe765c1797"
   license "MIT"
   head "https://github.com/akira-toriyama/chord.git", branch: "main"
 
