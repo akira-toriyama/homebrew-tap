@@ -4,22 +4,22 @@ cask "furrow" do
 
   on_macos do
     on_intel do
-      sha256 "4ed022ec2d0113afdf6273d6a53e8e0f7025b3b7583f041fe51b284da4777a90"
+      sha256 "026e01f70a9404247f4b55930cab4bbc8ea3d3ee0e6e43a50a94b22eb04ff6e1"
       url "https://github.com/akira-toriyama/furrow/releases/download/v#{version}/furrow_#{version}_darwin_amd64.tar.gz"
     end
     on_arm do
-      sha256 "ecc2888c849e72ee9c1bd9326753ffdc1315996480e1839a6e7dfe2a39065638"
+      sha256 "00d28b63986a1b1baac195c43273e74b92c7509f2f2911bad835f72f3c662d25"
       url "https://github.com/akira-toriyama/furrow/releases/download/v#{version}/furrow_#{version}_darwin_arm64.tar.gz"
     end
   end
 
   on_linux do
     on_intel do
-      sha256 "d35bbd71a4ab50f1287df230606a997a984cf3dac447ae5d2b4cee87c01cae42"
+      sha256 "3a5ac7e287a26bd348aaba183e41295787186880ffcf32f9d014c63e03f70c41"
       url "https://github.com/akira-toriyama/furrow/releases/download/v#{version}/furrow_#{version}_linux_amd64.tar.gz"
     end
     on_arm do
-      sha256 "776c8f1f1c4a33bb796450adab6852989b6100b59408e8b1a44c2e920e7e1587"
+      sha256 "a43d182442ec8dcaf049394e58267f8b319c85d8d64e72f91bb2d840737e8a4c"
       url "https://github.com/akira-toriyama/furrow/releases/download/v#{version}/furrow_#{version}_linux_arm64.tar.gz"
     end
   end
