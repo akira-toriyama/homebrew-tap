@@ -5,8 +5,8 @@
 class Glance < Formula
   desc "One-shot CLI that shows stdin in a non-activating macOS popover"
   homepage "https://github.com/akira-toriyama/glance"
-  url "https://github.com/akira-toriyama/glance/archive/refs/tags/v0.2.0.tar.gz"
-  sha256 "bb781b5596417fff7d33ea0804ee80b0689088efdd4e5118843428f00e36616d"
+  url "https://github.com/akira-toriyama/glance/archive/refs/tags/v0.3.0.tar.gz"
+  sha256 "0af31734c46bb532bc888ecd45b87a43d520a7acd84b0d8d1fdd0c093fe405be"
   license "MIT"
   head "https://github.com/akira-toriyama/glance.git", branch: "main"
 
