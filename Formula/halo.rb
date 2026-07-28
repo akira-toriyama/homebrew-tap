@@ -6,8 +6,8 @@ class Halo < Formula
   # placeholders just give the auto-bump's sed something to rewrite; the
   # first published release fills in the real v1.x.y tag + tarball
   # sha256. Until then, install from main with `brew install --HEAD halo`.
-  url "https://github.com/akira-toriyama/halo/archive/refs/tags/v3.0.2.tar.gz"
-  sha256 "8ac3091d9bff56330b26b6a6ab3bef9ed539947b7d3e7600e5be40e877224118"
+  url "https://github.com/akira-toriyama/halo/archive/refs/tags/v4.0.0.tar.gz"
+  sha256 "8fdf7f065914a1e170d372f0ab9b2ddf04b3c0bd8b94312c57e0dcfe2ca46c19"
   license "MIT"
   head "https://github.com/akira-toriyama/halo.git", branch: "main"
 
