@@ -13,12 +13,16 @@ class Halo < Formula
 
   # swift-tools-version 6.0 requires a Swift 6 toolchain. Builds with
   # the Xcode CLT swift just as well as a full Xcode.app — no full
-  # IDE required at install time. macOS 13 (Ventura) is the floor.
-  depends_on macos: :ventura
+  # IDE required at install time. macOS 26 (Tahoe) is the floor —
+  # halo's Package.swift declares `platforms: [.macOS("26.0")]` (the
+  # floor sill raised for its SwiftUI migration), so an older host
+  # would only fail later inside `swift build`.
+  depends_on macos: :tahoe
 
   def install
-    # No external SwiftPM deps; --disable-sandbox lets swiftpm write
-    # its cache under brew's restricted home.
+    # SwiftPM resolves sill + swift-toml-edit (and their transitive
+    # packages) from GitHub; --disable-sandbox lets swiftpm fetch and
+    # write its cache under brew's restricted home.
     system "swift", "build", "--disable-sandbox", "-c", "release"
 
     app = prefix/"Halo.app"
@@ -33,10 +37,12 @@ class Halo < Formula
       cp "AppIcon.icns", app/"Contents/Resources/AppIcon.icns"
     end
 
-    # Ad-hoc signing is enough: halo touches no TCC-gated APIs (no
-    # Accessibility, no Screen Recording — read-only private SkyLight
-    # only), so there's no grant to keep stable across upgrades and thus
-    # no self-signed-cert dance (unlike facet / perch).
+    # Ad-hoc signing. The ring is read-only (private SkyLight + a
+    # click-through overlay), but focus-shake moves the focused window
+    # via Accessibility, and TCC keys that grant to the signing identity
+    # — so an ad-hoc-signed upgrade drops it (the caveats say so). The
+    # self-signed-cert step halo's package.sh offers is a dev-loop
+    # convenience, not something a formula can do.
     system "codesign", "--force", "--sign", "-", app
   end
 
